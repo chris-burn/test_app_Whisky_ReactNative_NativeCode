@@ -1,22 +1,76 @@
 import React from 'react';
-import Realm from './realm.js';
+// import Realm from './realm.js';
+import Realm from 'realm';
+import schemas from './realm.js';
+import seeds from '../seeds.js';
 // import Styles from './components/styles';
 import { AppRegistry, StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
-import { StackNavigator } from 'react-navigation';
-import {TabNavigator} from 'react-navigation';
+import { StackNavigator } from 'react-navigation';import { TabNavigator } from 'react-navigation';
+
 
 class SplashScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {realm: null};
+  }
+
   static navigationOptions = {
     title: 'Welcome',
   };
 
+  componentDidMount() {
+   Realm.open({schema:[schemas.whiskySchema]})
+   .then(realm => {
+    realm.write(() => {
+      let whiskies = Array.from(realm.objects('Whisky'))
+      // console.log(whiskies.length)
+      for (var whisky of seeds) {
+        if (whiskies.length < seeds.length){
+          realm.create('Whisky', whisky);
+        }
+        else
+          this.setState({ realm: realm});
+      }})
+  }, (error) => {console.log(error)} )  
+   Realm.close;
+}
+// feed objects from whisky db table to array to utilise objects
+   // Realm.open({schema:[schemas.whiskySchema]})
+   // .then(realm => {
+   //  realm.write(() => {
+   //   let whiskies = Array.from(realm.objects('Whisky'));
+   //   console.log(whiskies);
+   // })
+   // }, (error) => {console.log(error)} )   
+   // Realm.close;
+
+
+// delete entries to whisky db table
+  //  Realm.open({schema:[schemas.whiskySchema]})
+  //  .then(realm => {
+  //   realm.write(() => {
+  //     let allWhiskies = realm.objects('Whisky');
+  //     realm.delete(allWhiskies);
+  //     this.setState({ realm: realm});
+  //   })
+  // }, (error) => {console.log(error)} )   
+  //  Realm.close;
+
+
   render() {
     const { navigate } = this.props.navigation;
+    const info = this.state.realm
+      ? 'Number of objects in this Realm: ' + this.state.realm.objects("Whisky")
+        : 'Loading...'; 
+
     return (
      <View style={styles.container}>
      <Image source={{uri: 'https://www.scotchwhiskyexperience.co.uk/app_assets/frontend/stock/whisky_glass-37e2de97ad5529ed4ca927bf19836f1e.png'}}
             style={{width: 300, height: 300}}/>
      <Text></Text>
+     <Text style={styles.container}>
+     {info}
+     </Text>
      <Text>Welcome to ScotWhiskyPal!</Text>
      <Button
      onPress={() => navigate('Whiskies', {user: 'Chris'})}
