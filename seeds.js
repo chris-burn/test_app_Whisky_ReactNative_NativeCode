@@ -65,6 +65,30 @@ const seeds =
   distillery_bottler: 'Glen Garioch',
   region: 'Highland',
   flavour: 'earthy, stewed fruit, rich, toasty oak, hint of mocha',
-}, ]
+},
+{
+  name: 'Single Cask, 15 years old',
+  distillery_bottler: 'Balvenie',
+  region: 'Speyside',
+  flavour: 'Christmas cake in a glass, rich dried fruit - lots of sherry',
+},
+{
+  name: '10 years old',
+  distillery_bottler: 'Ardbeg',
+  region: 'Islay',
+  flavour: 'sweet, smoke and a touch of salt - a real classic',
+},
+{
+  name: '12 years old',
+  distillery_bottler: 'Aberfeldy',
+  region: 'Highland',
+  flavour: 'Smooth texture. Fresh and fruity – freshly cut melon, green apple and pear – along with hot toast and honey',
+}, 
+{
+  name: '12 years old',
+  distillery_bottler: 'Old Pulteney',
+  region: 'Highland',
+  flavour: 'Sweet, floral, lemon and lime plus dry banana skin. Smooth and faintly salty',
+},]
 
 export default seeds;

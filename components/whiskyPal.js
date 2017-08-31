@@ -1,11 +1,12 @@
 import React from 'react';
-// import Realm from './realm.js';
 import Realm from 'realm';
+import WhiskiesScreen from './whiskyList.js'
 import schemas from './realm.js';
 import seeds from '../seeds.js';
 // import Styles from './components/styles';
-import { AppRegistry, StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
-import { StackNavigator } from 'react-navigation';import { TabNavigator } from 'react-navigation';
+import { AppRegistry, StyleSheet, Text, View, Button, Image, TextInput, ActivityIndicator, ListView } from 'react-native';
+import { StackNavigator } from 'react-navigation';
+import { TabNavigator } from 'react-navigation';
 
 
 class SplashScreen extends React.Component {
@@ -15,25 +16,26 @@ class SplashScreen extends React.Component {
   }
 
   static navigationOptions = {
-    title: 'Welcome',
+    title: 'ScotWhiskyPal',
   };
+
 
   componentDidMount() {
    Realm.open({schema:[schemas.whiskySchema]})
    .then(realm => {
     realm.write(() => {
       let whiskies = Array.from(realm.objects('Whisky'))
-      // console.log(whiskies.length)
       for (var whisky of seeds) {
         if (whiskies.length < seeds.length){
           realm.create('Whisky', whisky);
+          this.setState({ realm: realm});
         }
         else
           this.setState({ realm: realm});
       }})
   }, (error) => {console.log(error)} )  
    Realm.close;
-}
+
 // feed objects from whisky db table to array to utilise objects
    // Realm.open({schema:[schemas.whiskySchema]})
    // .then(realm => {
@@ -55,25 +57,24 @@ class SplashScreen extends React.Component {
   //   })
   // }, (error) => {console.log(error)} )   
   //  Realm.close;
-
+}
 
   render() {
     const { navigate } = this.props.navigation;
-    const info = this.state.realm
-      ? 'Number of objects in this Realm: ' + this.state.realm.objects("Whisky")
-        : 'Loading...'; 
+    
+    // const info = this.state.realm
+    //   ? 'Number of objects in this Realm: ' + this.state.realm.objects("Whisky")
+    //     : 'Loading...'; 
 
     return (
      <View style={styles.container}>
      <Image source={{uri: 'https://www.scotchwhiskyexperience.co.uk/app_assets/frontend/stock/whisky_glass-37e2de97ad5529ed4ca927bf19836f1e.png'}}
-            style={{width: 300, height: 300}}/>
+            style={{padding: 100, width: 200, height: 200}}/>
      <Text></Text>
-     <Text style={styles.container}>
-     {info}
-     </Text>
-     <Text>Welcome to ScotWhiskyPal!</Text>
+     <Text style={styles.titleText}>Slàinte!</Text>
+     <Text></Text>
      <Button
-     onPress={() => navigate('Whiskies', {user: 'Chris'})}
+     onPress={() => navigate('Whiskies')}
      title="View Whiskies"
      />
      <Button
@@ -81,11 +82,11 @@ class SplashScreen extends React.Component {
      title="My Collection"
      />
      <Button
-     onPress={() => navigate('TasteWish', {user: 'Chris'})}
+     onPress={() => navigate('TasteWish')}
      title="Tastings & WishList"
      />
      <Button
-     onPress={() => navigate('Distilleries', {user: 'Chris'})}
+     onPress={() => navigate('Distilleries')}
      title="Discover Distilleries"
      />
      </View>
@@ -93,25 +94,26 @@ class SplashScreen extends React.Component {
   }
 }
 
-class WhiskiesScreen extends React.Component {
-  static navigationOptions = {
-    title: 'View Whiskies',
-  };
-  render() {
-    // The screen's current route is passed in to `props.navigation.state`
-    const { params } = this.props.navigation.state;
-    return (
-      <View style={styles.container}>
-        <Text>List of Whiskies</Text>
-      </View>
-    );
-  }
-}
+// class WhiskiesScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'View Whiskies',
+//   };
+//   render() {
+//     // The screen's current route is passed in to `props.navigation.state`
+//     const { params } = this.props.navigation.state;
+//     return (
+//       <View style={styles.container}>
+//         <Text>List of Whiskies</Text>
+//       </View>
+//     );
+//   }
+// }
 
 class CollectionScreen extends React.Component {
   static navigationOptions = {
     title: 'My Collection',
   };
+
   render() {
     // The screen's current route is passed in to `props.navigation.state`
     const { params } = this.props.navigation.state;
@@ -143,7 +145,7 @@ class Tastings extends React.Component {
       <View style={styles.container}>
       <Text>List of Tastings</Text>
       <Button
-      onPress={() => navigate('AddTasting', {user: 'Chris'})}
+      onPress={() => navigate('AddTasting')}
       title="Add Tasting"
       />
       </View>
@@ -211,9 +213,13 @@ const Test_App = StackNavigator({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightblue',
+    backgroundColor: 'lightsteelblue',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  titleText: {
+    fontWeight: 'bold',
+    fontSize: 20,
   },
 });
 
